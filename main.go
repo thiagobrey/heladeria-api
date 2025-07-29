@@ -68,12 +68,12 @@ func main() {
 	//edido.PUT(":ID", commHandler.Update)
 	//pedido.DELETE(":id", commHandler.Deletepedido)
 
+	//TODO: crear los endpoints que faltan
 	taste := router.Group("taste")
-
 	taste.POST("", tasteHandler.Create)
 
+	//TODO: crear el get y delete by id
 	cantidad := router.Group("cantidad")
-
 	cantidad.POST("", cantHandler.Create)
 	cantidad.PUT("/:id", cantHandler.Update)
 	cantidad.GET("", cantHandler.List)
