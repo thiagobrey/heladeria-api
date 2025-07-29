@@ -4,7 +4,7 @@ import "clean_code/internal/domain"
 
 func (s *Services) Delete(id int) (*domain.User, error) {
 
-	_, err := s.Repo.GetUserByID(id)
+	_, err := s.Repo.GetById(id)
 	if err != nil {
 		return nil, err
 	}

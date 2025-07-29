@@ -8,6 +8,7 @@ func (s *CantidadServices) Update(cr *domain.CantidadRequest, id int) (cantidad 
 		Description: cr.Description,
 		CountTastes: cr.CountTastes,
 		Code:        cr.Code,
+		Price:       cr.Price,
 	}
 
 	cantidad, err = s.RepoCantidad.Update(newCantidad)

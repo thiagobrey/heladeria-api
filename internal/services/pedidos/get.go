@@ -4,7 +4,7 @@ import "clean_code/internal/domain"
 
 func (s *PedidosServices) GetByUserId(userId int) ([]*domain.Pedidos, error) {
 
-	_, err := s.RepoUser.GetUserByID(userId)
+	_, err := s.RepoUser.GetById(userId)
 	if err != nil {
 		return nil, err
 	}

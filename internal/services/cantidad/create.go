@@ -8,6 +8,7 @@ func (s *CantidadServices) Create(cr *domain.CantidadRequest) (cantidad *domain.
 		Description: cr.Description,
 		CountTastes: cr.CountTastes,
 		Code:        cr.Code,
+		Price:       cr.Price,
 	}
 
 	cantidad, err = s.RepoCantidad.Create(newCantidad)

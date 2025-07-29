@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (u *UserHandler) GetUserByID(c *gin.Context) {
+func (u *UserHandler) GetById(c *gin.Context) {
 	idstr := c.Param("id")
 	id, err := strconv.Atoi(idstr)
 	if err != nil {
@@ -14,7 +14,7 @@ func (u *UserHandler) GetUserByID(c *gin.Context) {
 		return
 	}
 
-	user, err := u.Services.GetUserByID(id)
+	user, err := u.Services.GetById(id)
 	if err != nil {
 		c.JSON(404, gin.H{"error": "User not found"})
 		return

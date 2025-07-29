@@ -1,7 +1,7 @@
 package domain
 
 type Cantidad struct {
-	Id          int     `json:"id_cantidad"`
+	Id          int     `json:"id"`
 	Description string  `json:"description"`
 	CountTastes int     `json:"count_tastes"`
 	Code        int     `json:"code"`
@@ -9,8 +9,8 @@ type Cantidad struct {
 }
 
 type CantidadRequest struct {
-	Description string  `json:"description"`
-	CountTastes int     `json:"count_tastes"`
-	Code        int     `json:"code"`
+	Description string  `json:"description" binding:"required"`
+	CountTastes int     `json:"count_tastes" binding:"required"`
+	Code        int     `json:"code" binding:"required"`
 	Price       float64 `json:"price" binding:"required"`
 }

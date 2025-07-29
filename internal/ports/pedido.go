@@ -12,7 +12,7 @@ type PedidosRepository interface {
 }
 
 type PedidosService interface {
-	Create(comment *domain.PedidosRequest) (*[]domain.Pedidos, error)
+	Create(comment *domain.PedidosRequest) (*domain.PedidosResponse, error)
 	GetByUserId(userId int) ([]*domain.Pedidos, error)
 	Update(comment *domain.Pedidos) (*domain.Pedidos, error)
 	List() ([]*domain.Pedidos, error)

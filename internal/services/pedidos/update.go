@@ -3,7 +3,7 @@ package services
 import "clean_code/internal/domain"
 
 func (s *PedidosServices) Update(pedido *domain.Pedidos) (*domain.Pedidos, error) {
-	_, err := s.RepoUser.GetUserByID(pedido.UserId)
+	_, err := s.RepoUser.GetById(pedido.UserId)
 	if err != nil {
 		return nil, err
 	}
