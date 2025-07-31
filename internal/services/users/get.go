@@ -2,7 +2,6 @@ package services
 
 import (
 	"clean_code/internal/domain"
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -32,12 +31,11 @@ func (s *Services) GetById(id int) (*domain.UserResponse, error) {
 				return nil, err
 			}
 
-			producto.Tastes = ""
+			pedido.Items[i].Tastes = ""
 
 			for _, taste := range tastesArray {
-				producto.Tastes += taste + ","
+				pedido.Items[i].Tastes += taste + ","
 			}
-			fmt.Println(producto.Tastes)
 		}
 	}
 	return user, nil
