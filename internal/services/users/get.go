@@ -2,6 +2,9 @@ package services
 
 import (
 	"clean_code/internal/domain"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 func (s *Services) GetById(id int) (*domain.UserResponse, error) {
@@ -10,6 +13,32 @@ func (s *Services) GetById(id int) (*domain.UserResponse, error) {
 		return nil, err
 	}
 
-	return user, nil
+	for _, pedido := range user.Pedidos {
+		for i, producto := range pedido.Items {
+			tasteIds := producto.Tastes
+			ids := strings.Split(tasteIds, ",")
+			var tasteIdsInt []int
 
+			for _, id := range ids {
+				idInt, err := strconv.Atoi(id)
+				if err != nil {
+					return nil, err
+				}
+				tasteIdsInt = append(tasteIdsInt, idInt)
+			}
+
+			tastesArray, err := s.RepoTastes.GetByIds(tasteIdsInt)
+			if err != nil {
+				return nil, err
+			}
+
+			producto.Tastes = ""
+
+			for _, taste := range tastesArray {
+				producto.Tastes += taste + ","
+			}
+			fmt.Println(producto.Tastes)
+		}
+	}
+	return user, nil
 }

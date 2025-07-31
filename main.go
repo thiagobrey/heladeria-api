@@ -30,20 +30,24 @@ func main() {
 	}
 
 	userRepo := repositories.Repository{DB: db}
-	userServices := services.Services{Repo: &userRepo}
-	userHandler := handlers.UserHandler{Services: &userServices}
-
 	tasteRepo := tastesRepositories.TasteRepository{DB: db}
-	tasteServices := tastesServices.TasteServices{Repo: &tasteRepo}
-	tasteHandler := tastesHandlers.TasteHandler{Services: &tasteServices}
-
 	cantRepo := cantRepositories.CantidadRepository{DB: db}
-	cantServices := cantServices.CantidadServices{RepoCantidad: &cantRepo}
-	cantHandler := cantHandlers.CantidadHandler{CantidadService: &cantServices}
-
 	pedRepo := pedidosRepositories.PedidosRepository{DB: db}
+
+	userServices := services.Services{Repo: &userRepo, RepoTastes: &tasteRepo}
+	tasteServices := tastesServices.TasteServices{Repo: &tasteRepo}
+	cantServices := cantServices.CantidadServices{RepoCantidad: &cantRepo}
 	pedServices := pedidosServices.PedidosServices{RepoPedidos: &pedRepo, RepoUser: &userRepo, RepoCantidad: &cantRepo, RepoTastes: &tasteRepo}
+
+	userHandler := handlers.UserHandler{Services: &userServices}
+	tasteHandler := tastesHandlers.TasteHandler{Services: &tasteServices}
+	cantHandler := cantHandlers.CantidadHandler{CantidadService: &cantServices}
 	pedHandler := pedidosHandlers.PedidosHandler{Services: &pedServices}
+
+
+
+
+
 
 	router := gin.Default()
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
@@ -65,18 +69,24 @@ func main() {
 	//pedido.GET(":user_id", commHandler.GetpedidoByUserId)
 	//pedido.GET("/all", commHandler.Listpedidos)
 	pedido.POST("", pedHandler.Create)
-	//edido.PUT(":ID", commHandler.Update)
+	//pedido.PUT(":ID", commHandler.Update)
 	//pedido.DELETE(":id", commHandler.Deletepedido)
 
 	//TODO: crear los endpoints que faltan
 	taste := router.Group("taste")
+	taste.GET(":id", tasteHandler.GetById) //probar
 	taste.POST("", tasteHandler.Create)
+	taste.DELETE(":id", tasteHandler.Delete)
+	taste.PUT(":id", tasteHandler.Update) //probar
+	taste.GET("", tasteHandler.List) //probar
 
-	//TODO: crear el get y delete by id
+	
 	cantidad := router.Group("cantidad")
+	cantidad.GET(":id", cantHandler.GetById) //probar
 	cantidad.POST("", cantHandler.Create)
 	cantidad.PUT("/:id", cantHandler.Update)
 	cantidad.GET("", cantHandler.List)
+	cantidad.DELETE(":id", cantHandler.Delete) //probar
 
 	router.Run() // listen and serve on 0.0.0.0:8080
 
