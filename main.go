@@ -44,11 +44,6 @@ func main() {
 	cantHandler := cantHandlers.CantidadHandler{CantidadService: &cantServices}
 	pedHandler := pedidosHandlers.PedidosHandler{Services: &pedServices}
 
-
-
-
-
-
 	router := gin.Default()
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("count_validator", func(fl validator.FieldLevel) bool {
@@ -78,9 +73,8 @@ func main() {
 	taste.POST("", tasteHandler.Create)
 	taste.DELETE(":id", tasteHandler.Delete)
 	taste.PUT(":id", tasteHandler.Update) //probar
-	taste.GET("", tasteHandler.List) //probar
+	taste.GET("", tasteHandler.List)      //probar
 
-	
 	cantidad := router.Group("cantidad")
 	cantidad.GET(":id", cantHandler.GetById) //probar
 	cantidad.POST("", cantHandler.Create)
