@@ -61,26 +61,25 @@ func main() {
 	user.DELETE(":id", userHandler.Delete)
 
 	pedido := router.Group("pedido")
-	//pedido.GET(":user_id", commHandler.GetpedidoByUserId)
-	//pedido.GET("/all", commHandler.Listpedidos)
+	pedido.GET(":user_id", pedHandler.GetCommentByUserId) // cambiar el response
+	pedido.GET("/all", pedHandler.List) // cambiar el response
 	pedido.POST("", pedHandler.Create)
-	//pedido.PUT(":ID", commHandler.Update)
-	//pedido.DELETE(":id", commHandler.Deletepedido)
+	pedido.PUT(":ID", pedHandler.Update) // no guarda lo updateado
+	pedido.DELETE(":id", pedHandler.Delete)
 
-	//TODO: crear los endpoints que faltan
 	taste := router.Group("taste")
-	taste.GET(":id", tasteHandler.GetById) //probar
+	taste.GET(":id", tasteHandler.GetById) 
 	taste.POST("", tasteHandler.Create)
 	taste.DELETE(":id", tasteHandler.Delete)
-	taste.PUT(":id", tasteHandler.Update) //probar
-	taste.GET("", tasteHandler.List)      //probar
+	taste.PUT(":id", tasteHandler.Update)
+	taste.GET("", tasteHandler.List)      
 
 	cantidad := router.Group("cantidad")
-	cantidad.GET(":id", cantHandler.GetById) //probar
+	cantidad.GET(":id", cantHandler.GetById) 
 	cantidad.POST("", cantHandler.Create)
 	cantidad.PUT("/:id", cantHandler.Update)
 	cantidad.GET("", cantHandler.List)
-	cantidad.DELETE(":id", cantHandler.Delete) //probar
+	cantidad.DELETE(":id", cantHandler.Delete) 
 
 	router.Run() // listen and serve on 0.0.0.0:8080
 

@@ -32,9 +32,11 @@ func (s *Services) GetById(id int) (*domain.UserResponse, error) {
 			}
 
 			pedido.Items[i].Tastes = ""
-
-			for _, taste := range tastesArray {
-				pedido.Items[i].Tastes += taste + ","
+			for x, taste := range tastesArray {
+				pedido.Items[i].Tastes += taste
+				if x != len(tastesArray)-1 {
+					pedido.Items[i].Tastes += ","
+				}
 			}
 		}
 	}
