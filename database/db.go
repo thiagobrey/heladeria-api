@@ -14,7 +14,7 @@ func InitConection() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	db.AutoMigrate( &domain.User{}, &domain.Taste{}, &domain.Cantidad{}, &domain.Pedidos{})
+	db.AutoMigrate(&domain.User{}, &domain.Taste{}, &domain.Cantidad{}, &domain.Pedidos{}, &domain.Admin{})
 
 	return db, err
 }
