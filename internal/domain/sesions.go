@@ -2,10 +2,11 @@ package domain
 
 import "time"
 
-type sesions struct {
+type Sesions struct {
 	Id         int        `json:"id"`
 	Token      string     `json:"token"`
 	Timestamps Timestamps `json:"timestamps"`
+	Data       string     `json:"data"`
 }
 
 type Timestamps struct {

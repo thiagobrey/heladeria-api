@@ -7,6 +7,7 @@ import (
 	tastesHandlers "clean_code/handlers/tastes"
 	handlers "clean_code/handlers/users"
 	pedidosRepositories "clean_code/internal/repositories/pedidos"
+	"clean_code/middleware"
 
 	tastesRepositories "clean_code/internal/repositories/tastes"
 	repositories "clean_code/internal/repositories/users"
@@ -55,12 +56,18 @@ func main() {
 		panic("failed to seed admin user: " + err.Error())
 	}
 
-	router := gin.Default()
+	router := gin.New()
+
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("count_validator", func(fl validator.FieldLevel) bool {
 			return validators.CountValidator(fl, db)
 		})
 	}
+
+	router.Use(middleware.AuthMiddleware())
+
+	
+
 	router.Use(gin.Recovery())
 
 	user := router.Group("user")
