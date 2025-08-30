@@ -8,6 +8,7 @@ import (
 	handlers "clean_code/handlers/users"
 	pedidosRepositories "clean_code/internal/repositories/pedidos"
 	"clean_code/middleware"
+	"fmt"
 
 	tastesRepositories "clean_code/internal/repositories/tastes"
 	repositories "clean_code/internal/repositories/users"
@@ -22,6 +23,10 @@ import (
 	admHandlers "clean_code/handlers/admins"
 	adminRepositories "clean_code/internal/repositories/admins"
 	adminServices "clean_code/internal/services/admins"
+
+	sesHandlers "clean_code/handlers/sesions"
+	sesRepositories "clean_code/internal/repositories/sesions"
+	sesServices "clean_code/internal/services/sesions"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -39,18 +44,24 @@ func main() {
 	cantRepo := cantRepositories.CantidadRepository{DB: db}
 	pedRepo := pedidosRepositories.PedidosRepository{DB: db}
 	admRepo := adminRepositories.AdminRepository{DB: db}
+	sesRepo := sesRepositories.SesionsRepository{DB: db}
 
 	userServices := services.Services{Repo: &userRepo, RepoTastes: &tasteRepo}
 	tasteServices := tastesServices.TasteServices{Repo: &tasteRepo}
 	cantServices := cantServices.CantidadServices{RepoCantidad: &cantRepo}
 	pedServices := pedidosServices.PedidosServices{RepoPedidos: &pedRepo, RepoUser: &userRepo, RepoCantidad: &cantRepo, RepoTastes: &tasteRepo}
 	admServices := adminServices.AdminServices{RepoAdmin: &admRepo}
+	sesServices := sesServices.SesionsServices{Repo: &sesRepo}
 
 	userHandler := handlers.UserHandler{Services: &userServices}
 	tasteHandler := tastesHandlers.TasteHandler{Services: &tasteServices}
 	cantHandler := cantHandlers.CantidadHandler{CantidadService: &cantServices}
 	pedHandler := pedidosHandlers.PedidosHandler{Services: &pedServices}
-	admHandler := admHandlers.AdminHandler{AdminService: &admServices}
+	admHandler := admHandlers.AdminHandler{AdminService: &admServices, SesionService: &sesServices}
+	sesHandler := sesHandlers.SesionHandler{SesionService: &sesServices}
+
+	fmt.Println(sesHandler)
+	
 
 	if err := adminRepositories.SeedAdmin(db); err != nil {
 		panic("failed to seed admin user: " + err.Error())
@@ -64,46 +75,43 @@ func main() {
 		})
 	}
 
-	router.Use(middleware.AuthMiddleware())
-
-	
-
 	router.Use(gin.Recovery())
 
 	user := router.Group("user")
 
-	user.GET(":id", userHandler.GetById)
-	user.GET("/all", userHandler.List)
-	user.POST("", userHandler.Create)
-	user.PUT(":id", userHandler.Update)
-	user.DELETE(":id", userHandler.Delete)
+	user.GET(":id", middleware.AuthMiddleware(db), userHandler.GetById)
+	user.GET("/all",middleware.AuthMiddleware(db), userHandler.List)
+	user.POST("",middleware.AuthMiddleware(db), userHandler.Create)
+	user.PUT(":id",middleware.AuthMiddleware(db), userHandler.Update)
+	user.DELETE(":id",middleware.AuthMiddleware(db), userHandler.Delete)
 
 	pedido := router.Group("pedido")
-	pedido.GET(":user_id", pedHandler.GetCommentByUserId) // cambiar el response
-	pedido.GET("/all", pedHandler.List)                   // cambiar el response
-	pedido.POST("", pedHandler.Create)
-	pedido.PUT(":ID", pedHandler.Update) // no guarda lo updateado
-	pedido.DELETE(":id", pedHandler.Delete)
+	pedido.GET(":user_id", middleware.AuthMiddleware(db), pedHandler.GetCommentByUserId) // cambiar el response
+	pedido.GET("/all", middleware.AuthMiddleware(db), pedHandler.List)                   // cambiar el response
+	pedido.POST("", middleware.AuthMiddleware(db), pedHandler.Create)
+	pedido.PUT(":ID", middleware.AuthMiddleware(db), pedHandler.Update) // no guarda lo updateado
+	pedido.DELETE(":id", middleware.AuthMiddleware(db), pedHandler.Delete)
 
 	taste := router.Group("taste")
-	taste.GET(":id", tasteHandler.GetById)
-	taste.POST("", tasteHandler.Create)
-	taste.DELETE(":id", tasteHandler.Delete)
-	taste.PUT(":id", tasteHandler.Update)
-	taste.GET("", tasteHandler.List)
+	taste.GET(":id", middleware.AuthMiddleware(db), tasteHandler.GetById)
+	taste.POST("", middleware.AuthMiddleware(db), tasteHandler.Create)
+	taste.DELETE(":id", middleware.AuthMiddleware(db), tasteHandler.Delete)
+	taste.PUT(":id", middleware.AuthMiddleware(db), tasteHandler.Update)
+	taste.GET("", middleware.AuthMiddleware(db), tasteHandler.List)
 
 	cantidad := router.Group("cantidad")
-	cantidad.GET(":id", cantHandler.GetById)
-	cantidad.POST("", cantHandler.Create)
-	cantidad.PUT("/:id", cantHandler.Update)
-	cantidad.GET("", cantHandler.List)
-	cantidad.DELETE(":id", cantHandler.Delete)
+	cantidad.GET(":id", middleware.AuthMiddleware(db), cantHandler.GetById)
+	cantidad.POST("",  middleware.AuthMiddleware(db),cantHandler.Create)
+	cantidad.PUT("/:id", middleware.AuthMiddleware(db), cantHandler.Update)
+	cantidad.GET("", middleware.AuthMiddleware(db), cantHandler.List)
+	cantidad.DELETE(":id", middleware.AuthMiddleware(db), cantHandler.Delete)
 
 	admin := router.Group("admin")
-	admin.POST("", admHandler.Create)
-	admin.GET(":id", admHandler.GetById)
-	admin.PUT(":id", admHandler.Update)
-	admin.DELETE(":id", admHandler.Delete)
+	admin.POST("", middleware.AuthMiddleware(db), admHandler.Create)
+	admin.GET(":id", middleware.AuthMiddleware(db), admHandler.GetById)
+	admin.PUT(":id", middleware.AuthMiddleware(db), admHandler.Update)
+	admin.DELETE(":id", middleware.AuthMiddleware(db), admHandler.Delete)
+	admin.POST("/login", admHandler.Login)
 
 	router.Run() // listen and serve on 0.0.0.0:8080
 

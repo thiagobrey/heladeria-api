@@ -7,6 +7,7 @@ type AdminRepository interface {
 	GetById(id int) (*domain.Admin, error)
 	Update(admin *domain.Admin) (*domain.Admin, error)
 	Delete(id int) (*domain.Admin, error)
+	GetByEmail(email string) (*domain.Admin, error)
 }
 
 type AdminService interface {
@@ -14,4 +15,5 @@ type AdminService interface {
 	GetById(id int) (*domain.Admin, error)
 	Update(admin *domain.Admin) (*domain.Admin, error)
 	Delete(id int) (*domain.Admin, error)
+	GetByEmail(email string) (*domain.Admin, error)
 }
