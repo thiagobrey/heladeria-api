@@ -5,11 +5,13 @@ import (
 	"clean_code/middleware"
 	"errors"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (s *AdminServices) Login(email, password string) (string, error) {
 	admin, err := s.RepoAdmin.GetByEmail(email)
-	if err != nil || admin.Password != password {
+	if err != nil || bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(password)) != nil {
 		return "", errors.New("Credenciales inválidas")
 	}
 

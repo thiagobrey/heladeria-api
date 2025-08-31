@@ -9,7 +9,7 @@ func (r *PedidosRepository) Update(pedido *domain.Pedidos) (*domain.Pedidos, err
 	fmt.Println("Editing comment:", pedido)
 	err := r.DB.Model(&domain.Pedidos{}).
 		Where("id = ? and user_id = ?", pedido.ID, pedido.UserId).
-		Updates(domain.Pedidos{}).Error
+		Updates(pedido).Error
 	if err != nil {
 		return nil, err
 	}

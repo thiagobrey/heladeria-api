@@ -31,9 +31,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	errEnv := godotenv.Load()
+	if errEnv != nil {
+		panic("Error cargando .env")
+	}
+
 	db, err := database.InitConection()
 	if err != nil {
 		panic("failed to connect database")
@@ -61,7 +68,6 @@ func main() {
 	sesHandler := sesHandlers.SesionHandler{SesionService: &sesServices}
 
 	fmt.Println(sesHandler)
-	
 
 	if err := adminRepositories.SeedAdmin(db); err != nil {
 		panic("failed to seed admin user: " + err.Error())
@@ -80,16 +86,16 @@ func main() {
 	user := router.Group("user")
 
 	user.GET(":id", middleware.AuthMiddleware(db), userHandler.GetById)
-	user.GET("/all",middleware.AuthMiddleware(db), userHandler.List)
-	user.POST("",middleware.AuthMiddleware(db), userHandler.Create)
-	user.PUT(":id",middleware.AuthMiddleware(db), userHandler.Update)
-	user.DELETE(":id",middleware.AuthMiddleware(db), userHandler.Delete)
+	user.GET("/all", middleware.AuthMiddleware(db), userHandler.List)
+	user.POST("", middleware.AuthMiddleware(db), userHandler.Create)
+	user.PUT(":id", middleware.AuthMiddleware(db), userHandler.Update)
+	user.DELETE(":id", middleware.AuthMiddleware(db), userHandler.Delete)
 
 	pedido := router.Group("pedido")
-	pedido.GET(":user_id", middleware.AuthMiddleware(db), pedHandler.GetCommentByUserId) // cambiar el response
-	pedido.GET("/all", middleware.AuthMiddleware(db), pedHandler.List)                   // cambiar el response
+	pedido.GET(":user_id", middleware.AuthMiddleware(db), pedHandler.GetCommentByUserId) 
+	pedido.GET("/all", middleware.AuthMiddleware(db), pedHandler.List)                  
 	pedido.POST("", middleware.AuthMiddleware(db), pedHandler.Create)
-	pedido.PUT(":ID", middleware.AuthMiddleware(db), pedHandler.Update) // no guarda lo updateado
+	pedido.PUT(":ID", middleware.AuthMiddleware(db), pedHandler.Update) 
 	pedido.DELETE(":id", middleware.AuthMiddleware(db), pedHandler.Delete)
 
 	taste := router.Group("taste")
@@ -101,7 +107,7 @@ func main() {
 
 	cantidad := router.Group("cantidad")
 	cantidad.GET(":id", middleware.AuthMiddleware(db), cantHandler.GetById)
-	cantidad.POST("",  middleware.AuthMiddleware(db),cantHandler.Create)
+	cantidad.POST("", middleware.AuthMiddleware(db), cantHandler.Create)
 	cantidad.PUT("/:id", middleware.AuthMiddleware(db), cantHandler.Update)
 	cantidad.GET("", middleware.AuthMiddleware(db), cantHandler.List)
 	cantidad.DELETE(":id", middleware.AuthMiddleware(db), cantHandler.Delete)
