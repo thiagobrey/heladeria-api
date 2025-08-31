@@ -16,4 +16,5 @@ type AdminService interface {
 	Update(admin *domain.Admin) (*domain.Admin, error)
 	Delete(id int) (*domain.Admin, error)
 	GetByEmail(email string) (*domain.Admin, error)
+	Login(email, password string) (string, error)
 }

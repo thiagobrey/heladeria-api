@@ -6,4 +6,5 @@ var _ ports.AdminService = &AdminServices{}
 
 type AdminServices struct {
 	RepoAdmin ports.AdminRepository
+	RepoSesion ports.SesionsRepository
 }

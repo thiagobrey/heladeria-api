@@ -29,7 +29,7 @@ func AuthMiddleware(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
-        if time.Since(sesion.Timestamps.CreatedAt) > time.Hour {
+        if time.Since(sesion.CreatedAt) > time.Hour {
             c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token expirado"})
             return
         }

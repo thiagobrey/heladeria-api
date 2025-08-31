@@ -50,7 +50,7 @@ func main() {
 	tasteServices := tastesServices.TasteServices{Repo: &tasteRepo}
 	cantServices := cantServices.CantidadServices{RepoCantidad: &cantRepo}
 	pedServices := pedidosServices.PedidosServices{RepoPedidos: &pedRepo, RepoUser: &userRepo, RepoCantidad: &cantRepo, RepoTastes: &tasteRepo}
-	admServices := adminServices.AdminServices{RepoAdmin: &admRepo}
+	admServices := adminServices.AdminServices{RepoAdmin: &admRepo, RepoSesion: &sesRepo}
 	sesServices := sesServices.SesionsServices{Repo: &sesRepo}
 
 	userHandler := handlers.UserHandler{Services: &userServices}
