@@ -38,9 +38,6 @@ func (s *PedidosServices) Create(request *domain.PedidosRequest) (*domain.Pedido
 		return nil, err
 	}
 
-	// Slice de gustos (check)
-	// Con los id de los gustos, hacer un get a la tabla de gustos con un where in (arreglar)
-	// Obtener el nombre de cada gusto y guardarlo en el PedidoResponse
 	for _, pedido := range Pedidos {
 		tasteIds := pedido.Tastes
 		ids := strings.Split(tasteIds, ",")

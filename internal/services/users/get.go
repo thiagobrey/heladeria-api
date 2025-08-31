@@ -1,12 +1,44 @@
 package services
 
-import "clean_code/internal/domain"
+import (
+	"clean_code/internal/domain"
+	"strconv"
+	"strings"
+)
 
-func (s *Services) GetById(id int) (*domain.User, error) {
+func (s *Services) GetById(id int) (*domain.UserResponse, error) {
 	user, err := s.Repo.GetLimitPedidosById(id)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
 
+	for _, pedido := range user.Pedidos {
+		for i, producto := range pedido.Items {
+			tasteIds := producto.Tastes
+			ids := strings.Split(tasteIds, ",")
+			var tasteIdsInt []int
+
+			for _, id := range ids {
+				idInt, err := strconv.Atoi(id)
+				if err != nil {
+					return nil, err
+				}
+				tasteIdsInt = append(tasteIdsInt, idInt)
+			}
+
+			tastesArray, err := s.RepoTastes.GetByIds(tasteIdsInt)
+			if err != nil {
+				return nil, err
+			}
+
+			pedido.Items[i].Tastes = ""
+			for x, taste := range tastesArray {
+				pedido.Items[i].Tastes += taste
+				if x != len(tastesArray)-1 {
+					pedido.Items[i].Tastes += ","
+				}
+			}
+		}
+	}
+	return user, nil
 }
